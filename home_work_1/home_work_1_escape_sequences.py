@@ -1,5 +1,6 @@
 from tabulate import tabulate
 
+print("Таблиця escape-послідовностей:")
 sequences = [
     ["\\a", "Bell (alert)"],
     ["\\b", "Backspace"],
