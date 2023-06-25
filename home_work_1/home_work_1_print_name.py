@@ -11,11 +11,12 @@ print('*       *  **     *   *     *  *         *  **     *  *        *    ****'
 
 # ---------- second variant
 print("Варіант 2: імʼя надруковане артом: ")
+mykhaylo2ascii = tprint("Micheal", font="3-d")
+print(mykhaylo2ascii)
+
 mykhaylo2ascii = tprint("Micheal")
 print(mykhaylo2ascii)
 
-mykhaylo2ascii = tprint("Micheal", font="block")
+mykhaylo2ascii = tprint("Micheal", font="twin-cob")
 print(mykhaylo2ascii)
 
-mykhaylo2ascii = tprint("Micheal", space=10)
-print(mykhaylo2ascii)
