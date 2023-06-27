@@ -9,6 +9,8 @@ print('*   *   *  *    * *     *        ******     *    * *    *    *   *       
 print('*       *  *  *   *    *  *     *       *   *  *   *   *      *   *     *')
 print('*       *  **     *   *     *  *         *  **     *  *        *    ****')
 
+
+
 # ---------- second variant
 print("Варіант 2: імʼя надруковане артом: ")
 mykhaylo2ascii = tprint("Micheal", font="3-d")
