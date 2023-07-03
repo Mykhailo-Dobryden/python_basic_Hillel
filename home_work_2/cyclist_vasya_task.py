@@ -12,7 +12,7 @@ mark_number = 0
 
 if speed > 0:
     mark_number = speed * hours
-elif speed < 0:
+if speed < 0:
     mark_number = abs(speed * hours)
 
 print(f"{mark_number} - it is a number of mark where cyclist Vasya will stop")
