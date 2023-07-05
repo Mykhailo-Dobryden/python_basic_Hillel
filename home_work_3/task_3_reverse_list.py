@@ -31,4 +31,3 @@ for elem in list_to_reverse:
     new_list.insert(0, elem)
 
 print(new_list)
-
