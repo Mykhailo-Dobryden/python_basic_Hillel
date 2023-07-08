@@ -21,7 +21,7 @@ import math
 num_list = []
 
 while True:
-    num = int(input("Enter a positive integers or enter 0 to exit: "))
+    num = int(input("Enter a positive integers: "))
     if num == 0:
         break
     num_list.append(num)

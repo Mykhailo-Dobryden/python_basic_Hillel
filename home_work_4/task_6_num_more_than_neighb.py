@@ -7,16 +7,11 @@
 def get_larger(num_list: list) -> int:
     """Return count of elements which are larger than value of their neighbours"""
     count = 0
-    for num in num_list:
-        index = num_list.index(num)
-        if index == 0 or index == len(num_list) - 1:
-            continue
-        elif num_list[index - 1] < num > num_list[index + 1]:
+    for i in range(1, len(num_list) - 1):
+        if num_list[i - 1] < num_list[i] > num_list[i + 1]:
             count += 1
-        else:
-            continue
     return count
 
 
-some_numbers = [600, 3, 13, 100, 60, 100, 15, 15, 9, 5, 10, 3, 6]
+some_numbers = [600, 3, 13, 100, 60, 15, 15, 9, 5, 3, 6]
 print(get_larger(some_numbers))
