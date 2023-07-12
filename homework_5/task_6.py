@@ -12,6 +12,7 @@ def rm_none_item(data: dict):
 
 my_dict = {'first_color': None,
            'second_color': 'Green',
+           'second_co': '',
            'third_color': None,
            'name': 'kolya',
            'position': None,
