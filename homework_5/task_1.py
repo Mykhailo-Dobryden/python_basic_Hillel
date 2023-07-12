@@ -4,7 +4,8 @@
 наприклад 2, 3, 5, 7, 11 ...)"""
 
 
-def is_prime(num):
+def is_prime(num: int):
+    """Return True if number is prime number, else return False"""
     if num < 0 or num > 1000:
         return str(f"Number {num} is out of required range")
     if num < 2:
