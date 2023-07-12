@@ -10,8 +10,7 @@ def get_str_analysis(data: str):
     """Return a tuple, where 1st value - a number of words,
     2nd - a number of symbols"""
     words_num = data.split()
-    symbols_num = data.replace(" ", "")
-    return len(words_num), len(symbols_num)
+    return len(words_num), len(data)
 
 
 user_input = get_user_input()
