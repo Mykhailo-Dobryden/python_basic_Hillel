@@ -6,7 +6,5 @@ Output
     {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e'}"""
 
 my_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'k']
-
 my_dict = {k: v for k, v in enumerate(my_list)}
-
 print(my_dict)
