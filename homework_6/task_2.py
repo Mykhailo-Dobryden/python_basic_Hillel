@@ -5,6 +5,7 @@
 
 import json
 import time
+import datetime
 
 
 def count_duration() -> int:
@@ -18,7 +19,7 @@ def count_duration() -> int:
 
 
 def convert_seconds(secs):
-    convert = time.strftime("%H:%M:%S", time.gmtime(secs))
+    convert = str(datetime.timedelta(seconds=secs))
     return convert
 
 
