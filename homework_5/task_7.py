@@ -11,11 +11,12 @@ def is_date(d: int, m: int, y: int) -> bool:
               7: 31, 8: 31, 9: 30,
               10: 31, 11: 30, 12: 31}  # dict of months with days
 
+    if months.get(m) is None:
+        return False
     if y < 1:  # Our calendar counting years from AD 1
         return False
     if y % 400 == 0 or (y % 4 == 0 and y % 100 > 0):  # validation for leap year
         months[2] = 29
-
     if d not in range(1, months[m] + 1):
         return False
     return True
