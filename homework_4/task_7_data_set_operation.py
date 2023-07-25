@@ -8,10 +8,12 @@ def compare_list(list_one, list_two):
     common_in_both_list = set(list_one).intersection(set(list_two))
     uniq_for_first_list = set(list_one).difference(set(list_two))
     symmetric_differ = set(list_one).symmetric_difference(set(list_two))
+    symmetric_differ2 = set(list_one) | (set(list_two))
 
     print(f"Numbers that exist in both list: {common_in_both_list}")
     print(f"Numbers that exist only in first list: {uniq_for_first_list}")
     print(f"Only uniq values of both list: {symmetric_differ}")
+    print(f"Only uniq values of both list: {symmetric_differ2}")
 
 
 data_one = [2, 5, 4, 11, 10, 3, 9]
