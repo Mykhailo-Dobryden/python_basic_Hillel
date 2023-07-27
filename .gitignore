@@ -1,6 +1,0 @@
-# Project exclude paths
-/venv/
-.idea
-/lessons/
-__pycache__/
-.gitignore
