@@ -12,11 +12,14 @@ def user_input_temp() -> tuple:
 
     # Verification of entered values for appropriate temperature scale:
     if t_scale == 'C' and t < -273.15:  # for Celsius scale
-        raise ValueError("Minimum allowed temperature for Celsius is -273.15. Please, enter a correct value")
+        raise ValueError("Minimum allowed temperature for Celsius is -273.15. "
+                         "Please, enter a correct value")
     if t_scale == 'K' and t < 0:  # for Kelvin scale
-        raise ValueError("Minimum allowed temperature for Kelvin is 0. Please, enter a correct value")
+        raise ValueError("Minimum allowed temperature for Kelvin is 0. "
+                         "Please, enter a correct value")
     if t_scale == 'F' and t < -459.67:  # for Fahrenheit scale
-        raise ValueError("Minimum allowed temperature for Fahrenheit degrees is -459.67. Please, enter a correct value")
+        raise ValueError("Minimum allowed temperature for Fahrenheit degrees is -459.67. "
+                         "Please, enter a correct value")
     else:
         return t, t_scale
 
