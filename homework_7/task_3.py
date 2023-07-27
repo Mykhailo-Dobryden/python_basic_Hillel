@@ -5,32 +5,30 @@ import datetime
 import requests
 
 
-WEATHER_API = "http://api.openweathermap.org/data/2.5/forecast"
+WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?"
 API_ID = "f9ada9efec6a3934dad5f30068fdcbb8"
 
 
-def get_data_requests(city='Odessa', days=1):
-    """Get a weather data. The function returns
-    the json-encoded content of a response, if any"""
-    url = f"{WEATHER_API}/daily?q={city}&cnt={days}&units=metric&appid={API_ID}"
-    response = requests.get(url)
+def get_data_requests(param):
+    """Get a weather data. The function returns the json-encoded content"""
+    url = WEATHER_API_URL
+    response = requests.get(url, params=param)
     return response.json()
 
 
 def create_name_for_file(data):
-    """Create a name for file from json-encoded data. Returns
-    a string"""
+    """Create a name for file from json-encoded data. Returns a string"""
     list_dt = data['list'][0]['dt']  # Get date from weather forecast data
-    time_of_data = datetime.datetime.fromtimestamp(list_dt).strftime("%d-%m-%Y")
+    formatted_date = datetime.datetime.fromtimestamp(list_dt).strftime("%d-%m-%Y")
     city_name = data['city']['name']  # Get name of city
     days = data['cnt']  # Get period of forecast in days
-    return f"{time_of_data}-{city_name}-{days}-days-weather-forecast"
+    return f"{formatted_date}-{city_name}-{days}-days-weather-forecast"
 
 
 def create_file_txt(data):
     """The function create a txt-file and write here: date, day temp and
     night temp"""
-    f_name = create_name_for_file(data)
+    f_name = create_name_for_file(data)  # Call outer function for creating file name
     head = "Date / Day, t / Night, t \n"  # First row for the data
     with open(f"{f_name}.txt", 'w') as f:
         f.writelines(f"{head}")
@@ -51,7 +49,9 @@ def user_forecast_request():
     return city, int(days)
 
 
-location, period = user_forecast_request()
-forecast_data = get_data_requests(city=location, days=period)
-file_name = create_name_for_file(forecast_data)
-create_file_txt(forecast_data)
+params = dict(appid=API_ID, units='metric')  # Create dict with params
+params['q'], params['cnt'] = user_forecast_request()  # Add user request to params
+
+
+forecast_data = get_data_requests(params)  # Get weather forecast
+create_file_txt(forecast_data)  # Create a file with forecast data
