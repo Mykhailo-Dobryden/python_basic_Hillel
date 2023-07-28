@@ -29,7 +29,7 @@ def create_file_txt(data):
     """The function create a txt-file and write here: date, day temp and
     night temp"""
     f_name = create_name_for_file(data)  # Call outer function for creating file name
-    head = "Date / Day, t / Night, t \n"  # First row for the data
+    head = "Date | Day, t | Night, t \n"  # First row for the data
     with open(f"{f_name}.txt", 'w') as f:
         f.writelines(f"{head}")
         data_list = data['list']
@@ -38,7 +38,7 @@ def create_file_txt(data):
             date = datetime.datetime.fromtimestamp(dt).strftime("%d-%m-%Y")  # get formatted Date
             day_temp = data['list'][i]['temp']['day']  # get day temperature
             night_temp = data['list'][i]['temp']['night']  # get night temperature
-            f.writelines(f"{date} / {day_temp} / {night_temp} \n")
+            f.writelines(f"{date}  {day_temp}  {night_temp} \n")
 
 
 def user_forecast_request():
