@@ -5,24 +5,28 @@ import argparse
 from tabulate import tabulate
 import csv
 
-current_date = datetime.now().strftime('%Y-%m-%d')
+CURRENT_DATE = datetime.now().date()
+API_URL = "https://api.exchangerate.host/convert"
 
 
 # Functions---------------------------------------------------------------
-def check_entered_currencies(currency_code):
+def check_entered_currencies(currency_code=str) -> bool:
+    """Compare an entered currency code with a list of currency codes."""
     with open('symbols.json') as f:
         data_json = json.loads(f.read())
         keys = data_json['symbols'].keys()
-        if currency_code in keys:
+        if currency_code.upper() in keys:
             return True
         else:
             return False
 
 
-def compare_with_date_now(date, delta):
-    print('compare_with_date_now: ', delta, date)
-    print('result: ', date + timedelta(days=delta), datetime.now().date())
-    if date + timedelta(days=delta) > datetime.now().date():
+def compare_with_date_now(date, period):
+    """Function checks if it is possible to get data in case needs data
+    for period of time which have a future Dates.
+    date: start_date;
+    period: it is a period of time in days."""
+    if date + timedelta(days=period) > CURRENT_DATE:
         return False
     return True
 
@@ -53,12 +57,14 @@ def print_on_screen(data):
 
 
 def save_to_csv(data):
+    """Save data to csv file"""
     with open("currency_result.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(data)
 
 
 def save_to_txt(data):
+    """Save data to txt file"""
     with open("currency_result.txt", "w") as f:
         f.writelines(tabulate(data))
 
@@ -78,7 +84,7 @@ parser.add_argument('currency_to', type=str, nargs='?', default='UAH',
                          "default='UAH'")
 parser.add_argument('amount', type=float, nargs='?', default=100.00,
                     help='The amount to be converted. default=100.00.')
-parser.add_argument('-sd', '--start_date', type=str, nargs='?', default=current_date,
+parser.add_argument('-sd', '--start_date', type=str, nargs='?', default=CURRENT_DATE.strftime('%Y-%m-%d'),
                     help='To get currency rate for specific date, please use '
                          'date in format "YYYY-MM-DD"')
 parser.add_argument('-d', '--days', type=int, nargs='?', default=1,
@@ -91,19 +97,14 @@ parser.add_argument('--save_to_file', action='store_true', help="Save result in 
 args = parser.parse_args()
 
 # Main script-----------------------------------------------
-API_URL = "https://api.exchangerate.host/convert"
-
-# Checking the correctness of entered currency codes:
-if check_entered_currencies(args.currency_from) is False:
-    print(f"{args.currency_from} is incorrect")
-if check_entered_currencies(args.currency_to) is False:
-    print(f"{args.currency_to} is incorrect")
-
 currency_from = args.currency_from
 currency_to = args.currency_to
 amount = args.amount
 start_date = args.start_date
-period = args.days
+period_days = args.days
+
+if datetime.strptime(start_date, '%Y-%m-%d').date() > CURRENT_DATE:
+    start_date = CURRENT_DATE.strftime('%Y-%m-%d')
 
 params = {'date': start_date,
           'from': currency_from,
@@ -111,13 +112,15 @@ params = {'date': start_date,
           'places': 2,
           'amount': amount}
 
+# Checking the correctness of entered currency codes, if one is wrong, script -
+# will not be executed :
 if check_entered_currencies(args.currency_from) is False:
     print(f"Incorrect currency code: {args.currency_from}")
-elif check_entered_currencies(args.currency_to) is False:
+if check_entered_currencies(args.currency_to) is False:
     print(f"Incorrect currency code: {args.currency_to}")
 else:
-    try:
-        exchange_rates_result = get_currencies_rate(params, period)
+    try:  # Throw exception if it's not possible to get data due to big period_days
+        exchange_rates_result = get_currencies_rate(params, period_days)
         if args.display is True:
             print_on_screen(exchange_rates_result)
         if args.save_to_csv is True:
@@ -126,5 +129,4 @@ else:
             save_to_txt(exchange_rates_result)
     except ValueError as e:
         print(e)
-
 
