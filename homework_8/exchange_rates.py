@@ -83,32 +83,32 @@ def save_to_txt(data, param):
 
 
 # Parser of command-line-------------------------------------------
-parser = argparse.ArgumentParser(
-    description='It is a simple and lightweight free service for current '
-                'and historical foreign exchange rates & crypto exchange rates.',
-    prog='Online currency converter'
-)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='It is a simple and lightweight free service for current '
+                    'and historical foreign exchange rates & crypto exchange rates.',
+        prog='Online currency converter'
+    )
+    parser.add_argument('currency_from', type=str, nargs='?', default='USD',
+                        help="The three-letter currency code of the currency you would like to convert from. "
+                             "default='USD'")
+    parser.add_argument('currency_to', type=str, nargs='?', default='UAH',
+                        help="The three-letter currency code of the currency you would like to convert to. "
+                             "default='UAH'")
+    parser.add_argument('amount', type=float, nargs='?', default=100.00,
+                        help='The amount to be converted. default=100.00.')
+    parser.add_argument('-sd', '--start_date', type=str, nargs='?', default=CURRENT_DATE.strftime('%Y-%m-%d'),
+                        help='To get currency rate for specific date, please use '
+                             'date in format "YYYY-MM-DD"')
+    parser.add_argument('-d', '--days', type=int, nargs='?', default=1,
+                        help="Period of time for which need to get exchange rates in days "
+                             "start from '--start_date'-date. If this period greater than 1 day, it can't be"
+                             "applied for request with start_date which is equal to current date")
+    parser.add_argument('--display', action='store_true', help="Display results on the screen")
+    parser.add_argument('-csv', '--save_to_csv', action='store_true', help="Save result in csv format")
+    parser.add_argument('-txt', '--save_to_file', action='store_true', help="Save result in txt-file")
 
-parser.add_argument('currency_from', type=str, nargs='?', default='USD',
-                    help="The three-letter currency code of the currency you would like to convert from. "
-                         "default='USD'")
-parser.add_argument('currency_to', type=str, nargs='?', default='UAH',
-                    help="The three-letter currency code of the currency you would like to convert to. "
-                         "default='UAH'")
-parser.add_argument('amount', type=float, nargs='?', default=100.00,
-                    help='The amount to be converted. default=100.00.')
-parser.add_argument('-sd', '--start_date', type=str, nargs='?', default=CURRENT_DATE.strftime('%Y-%m-%d'),
-                    help='To get currency rate for specific date, please use '
-                         'date in format "YYYY-MM-DD"')
-parser.add_argument('-d', '--days', type=int, nargs='?', default=1,
-                    help="Period of time for which need to get exchange rates in days "
-                         "start from '--start_date'-date. If this period greater than 1 day, it can't be"
-                         "applied for request with start_date which is equal to current date")
-parser.add_argument('--display', action='store_true', help="Display results on the screen")
-parser.add_argument('-csv', '--save_to_csv', action='store_true', help="Save result in csv format")
-parser.add_argument('-txt', '--save_to_file', action='store_true', help="Save result in txt-file")
-
-args = parser.parse_args()
+    args = parser.parse_args()
 
 # Main script-----------------------------------------------
 currency_from = args.currency_from
