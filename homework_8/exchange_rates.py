@@ -34,10 +34,6 @@ def compare_with_date_now(date, period):
 def get_currencies_rate(params, period=1):
     outcome = [['date', 'from', 'to', 'amount', 'rate', 'result']]
     date_object = datetime.strptime(params['date'], '%Y-%m-%d').date()
-    if compare_with_date_now(date_object, period - 1) is True:
-        pass
-    else:
-        raise ValueError(f"It's impossible to get currency rate for period {period} days")
     for p in range(1, period + 1):
         response = requests.get(API_URL, params=params).json()
         rate_values = [response['date'],
@@ -89,7 +85,8 @@ parser.add_argument('-sd', '--start_date', type=str, nargs='?', default=CURRENT_
                          'date in format "YYYY-MM-DD"')
 parser.add_argument('-d', '--days', type=int, nargs='?', default=1,
                     help="Period of time for which need to get exchange rates in days "
-                         "start from --start_date")
+                         "start from '--start_date'-date. If this period greater than 1 days, it can't be"
+                         "applied for request with start_date which is equal to current date")
 parser.add_argument('--display', action='store_true', help="Display results on the screen")
 parser.add_argument('--save_to_csv', action='store_true', help="Save result in csv format")
 parser.add_argument('--save_to_file', action='store_true', help="Save result in txt-file")
@@ -118,15 +115,16 @@ if check_entered_currencies(args.currency_from) is False:
     print(f"Incorrect currency code: {args.currency_from}")
 if check_entered_currencies(args.currency_to) is False:
     print(f"Incorrect currency code: {args.currency_to}")
+if compare_with_date_now(datetime.strptime(start_date, '%Y-%m-%d').date(), period_days - 1) is False:
+    print(f"{period_days} days - it's too big period times, which include Future Date. "
+          f"Try lesser period.")
 else:
-    try:  # Throw exception if it's not possible to get data due to big period_days
-        exchange_rates_result = get_currencies_rate(params, period_days)
-        if args.display is True:
-            print_on_screen(exchange_rates_result)
-        if args.save_to_csv is True:
-            save_to_csv(exchange_rates_result)
-        if args.save_to_file is True:
-            save_to_txt(exchange_rates_result)
-    except ValueError as e:
-        print(e)
+    exchange_rates_result = get_currencies_rate(params, period_days)
+    if args.display is True:
+        print_on_screen(exchange_rates_result)
+    if args.save_to_csv is True:
+        save_to_csv(exchange_rates_result)
+    if args.save_to_file is True:
+        save_to_txt(exchange_rates_result)
+
 
