@@ -1,9 +1,9 @@
-import json
-import requests
-from datetime import datetime, timedelta
-import argparse
 from tabulate import tabulate
+from datetime import datetime, timedelta
+import json
 import csv
+import requests
+import argparse
 
 CURRENT_DATE = datetime.now().date()
 API_URL = "https://api.exchangerate.host/convert"
@@ -31,11 +31,17 @@ def compare_with_date_now(date, period):
     return True
 
 
-def get_currencies_rate(params, period=1):
+def get_currencies_rate(param, period=1) -> list:
+    """This function makes a request to the 'exchangerate.host' website api,
+    using queries in params. Returns a nested list, where each list corresponds to
+    one specified date.
+
+    param - is a dict query=value
+    period - number of days, for which it needs to have report"""
     outcome = [['date', 'from', 'to', 'amount', 'rate', 'result']]
-    date_object = datetime.strptime(params['date'], '%Y-%m-%d').date()
+    date_object = datetime.strptime(param['date'], '%Y-%m-%d').date()
     for p in range(1, period + 1):
-        response = requests.get(API_URL, params=params).json()
+        response = requests.get(API_URL, params=param).json()
         rate_values = [response['date'],
                        response['query']['from'],
                        response['query']['to'],
@@ -43,7 +49,7 @@ def get_currencies_rate(params, period=1):
                        response['info']['rate'],
                        response['result']]
         outcome.append(rate_values)
-        params['date'] = date_object + timedelta(days=p)
+        param['date'] = date_object + timedelta(days=p)
     return outcome
 
 
@@ -52,16 +58,27 @@ def print_on_screen(data):
     print(tabulate(data))
 
 
-def save_to_csv(data):
+def create_file_name(param):
+    """Generate a name for file in format:
+    from-{from_currency}-to-{to_currency}-for-{date}"""
+    from_currency = param['from']
+    to_currency = param['to']
+    requested_date = param['date']
+    return f"from-{from_currency}-to-{to_currency}-for-{requested_date}"
+
+
+def save_to_csv(data, param):
     """Save data to csv file"""
-    with open("currency_result.csv", "w") as csvfile:
+    f_name = create_file_name(param)
+    with open(f"{f_name}.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(data)
 
 
-def save_to_txt(data):
-    """Save data to txt file"""
-    with open("currency_result.txt", "w") as f:
+def save_to_txt(data, param):
+    """Save data to txt file. Data formatted as table"""
+    f_name = create_file_name(param)
+    with open(f"{f_name}.txt", "w") as f:
         f.writelines(tabulate(data))
 
 
@@ -85,11 +102,11 @@ parser.add_argument('-sd', '--start_date', type=str, nargs='?', default=CURRENT_
                          'date in format "YYYY-MM-DD"')
 parser.add_argument('-d', '--days', type=int, nargs='?', default=1,
                     help="Period of time for which need to get exchange rates in days "
-                         "start from '--start_date'-date. If this period greater than 1 days, it can't be"
+                         "start from '--start_date'-date. If this period greater than 1 day, it can't be"
                          "applied for request with start_date which is equal to current date")
 parser.add_argument('--display', action='store_true', help="Display results on the screen")
-parser.add_argument('--save_to_csv', action='store_true', help="Save result in csv format")
-parser.add_argument('--save_to_file', action='store_true', help="Save result in txt-file")
+parser.add_argument('-csv', '--save_to_csv', action='store_true', help="Save result in csv format")
+parser.add_argument('-txt', '--save_to_file', action='store_true', help="Save result in txt-file")
 
 args = parser.parse_args()
 
@@ -100,13 +117,16 @@ amount = args.amount
 start_date = args.start_date
 period_days = args.days
 
+# Checking start_date date: if user enters a future date,
+# then a value of CURRENT_DATE is assigned to start_date
 if datetime.strptime(start_date, '%Y-%m-%d').date() > CURRENT_DATE:
     start_date = CURRENT_DATE.strftime('%Y-%m-%d')
 
+# Params - it's a dict with queries and values
 params = {'date': start_date,
           'from': currency_from,
           'to': currency_to,
-          'places': 2,
+          'places': 2,  # Round numbers to decimal place.
           'amount': amount}
 
 # Checking the correctness of entered currency codes, if one is wrong, script -
@@ -115,6 +135,8 @@ if check_entered_currencies(args.currency_from) is False:
     print(f"Incorrect currency code: {args.currency_from}")
 if check_entered_currencies(args.currency_to) is False:
     print(f"Incorrect currency code: {args.currency_to}")
+# Checking the correctness of entered period of time (--days), if one is too big and in result it can
+# make a request with a future date, script - will not be executed :
 if compare_with_date_now(datetime.strptime(start_date, '%Y-%m-%d').date(), period_days - 1) is False:
     print(f"{period_days} days - it's too big period times, which include Future Date. "
           f"Try lesser period.")
@@ -123,8 +145,6 @@ else:
     if args.display is True:
         print_on_screen(exchange_rates_result)
     if args.save_to_csv is True:
-        save_to_csv(exchange_rates_result)
+        save_to_csv(exchange_rates_result, params)
     if args.save_to_file is True:
-        save_to_txt(exchange_rates_result)
-
-
+        save_to_txt(exchange_rates_result, params)
