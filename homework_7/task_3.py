@@ -3,16 +3,18 @@
 """
 import datetime
 import requests
+import os
 
 
 WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?"
-API_ID = "f9ada9efec6a3934dad5f30068fdcbb8"
+
+key = "WEATHER_API_ID"
+API_ID = os.getenv(key, "value does not exist")
 
 
 def get_data_requests(param):
     """Get a weather data. The function returns the json-encoded content"""
-    url = WEATHER_API_URL
-    response = requests.get(url, params=param)
+    response = requests.get(WEATHER_API_URL, params=param)
     return response.json()
 
 
@@ -49,9 +51,8 @@ def user_forecast_request():
     return city, int(days)
 
 
-params = dict(appid=API_ID, units='metric')  # Create dict with params
-params['q'], params['cnt'] = user_forecast_request()  # Add user request to params
-
-
-forecast_data = get_data_requests(params)  # Get weather forecast
-create_file_txt(forecast_data)  # Create a file with forecast data
+if __name__ == '__main__':
+    params = dict(appid=API_ID, units='metric')  # Create dict with params
+    params['q'], params['cnt'] = user_forecast_request()  # Add user request to params
+    forecast_data = get_data_requests(params)  # Get weather forecast
+    create_file_txt(forecast_data)  # Create a file with forecast data
