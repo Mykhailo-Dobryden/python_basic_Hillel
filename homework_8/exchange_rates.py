@@ -111,40 +111,43 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 # Main script-----------------------------------------------
-currency_from = args.currency_from
-currency_to = args.currency_to
-amount = args.amount
-start_date = args.start_date
-period_days = args.days
 
-# Checking start_date date: if user enters a future date,
-# then a value of CURRENT_DATE is assigned to start_date
-if datetime.strptime(start_date, '%Y-%m-%d').date() > CURRENT_DATE:
-    start_date = CURRENT_DATE.strftime('%Y-%m-%d')
+if __name__ == '__main__':
+    currency_from = args.currency_from
+    currency_to = args.currency_to
+    amount = args.amount
+    start_date = args.start_date
+    period_days = args.days
 
-# Params - it's a dict with queries and values
-params = {'date': start_date,
-          'from': currency_from,
-          'to': currency_to,
-          'places': 2,  # Round numbers to decimal place.
-          'amount': amount}
+    # Checking start_date date: if user enters a future date,
+    # then a value of CURRENT_DATE is assigned to start_date
+    if datetime.strptime(start_date, '%Y-%m-%d').date() > CURRENT_DATE:
+        start_date = CURRENT_DATE.strftime('%Y-%m-%d')
 
-# Checking the correctness of entered currency codes, if one is wrong, script -
-# will not be executed :
-if check_entered_currencies(args.currency_from) is False:
-    print(f"Incorrect currency code: {args.currency_from}")
-if check_entered_currencies(args.currency_to) is False:
-    print(f"Incorrect currency code: {args.currency_to}")
-# Checking the correctness of entered period of time (--days), if one is too big and in result it can
-# make a request with a future date, script - will not be executed :
-if compare_with_date_now(datetime.strptime(start_date, '%Y-%m-%d').date(), period_days - 1) is False:
-    print(f"{period_days} days - it's too big period times, which include Future Date. "
-          f"Try lesser period.")
-else:
-    exchange_rates_result = get_currencies_rate(params, period_days)
-    if args.display is True:
-        print_on_screen(exchange_rates_result)
-    if args.save_to_csv is True:
-        save_to_csv(exchange_rates_result, params)
-    if args.save_to_file is True:
-        save_to_txt(exchange_rates_result, params)
+    # Params - it's a dict with queries and values
+    params = {'date': start_date,
+              'from': currency_from,
+              'to': currency_to,
+              'places': 2,  # Round numbers to decimal place.
+              'amount': amount}
+
+    # Checking the correctness of entered currency codes, if one is wrong, script -
+    # will not be executed :
+    if check_entered_currencies(args.currency_from) is False:
+        print(f"Incorrect currency code: {args.currency_from}")
+    if check_entered_currencies(args.currency_to) is False:
+        print(f"Incorrect currency code: {args.currency_to}")
+    # Checking the correctness of entered period of time (--days), if one is too big and in result it can
+    # make a request with a future date, script - will not be executed :
+    if compare_with_date_now(datetime.strptime(start_date, '%Y-%m-%d').date(), period_days - 1) is False:
+        print(f"{period_days} days - it's too big period times, which include Future Date. "
+              f"Try lesser period.")
+    else:
+        exchange_rates_result = get_currencies_rate(params, period_days)
+        if args.display is True:
+            print_on_screen(exchange_rates_result)
+        if args.save_to_csv is True:
+            save_to_csv(exchange_rates_result, params)
+        if args.save_to_file is True:
+            save_to_txt(exchange_rates_result, params)
+
