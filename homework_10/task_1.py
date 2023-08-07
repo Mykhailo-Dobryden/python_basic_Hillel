@@ -31,9 +31,10 @@ def write_to_file(file_name: str, data: list):
 
 
 def main():
-    text_to_write = user_inputs()  # Ask user to enter a text
-    name_for_file = ask_file_name()  # Ask a name for file
-    write_to_file(name_for_file, text_to_write)  # Create file and write date there
+    # text_to_write = user_inputs()  # Ask user to enter a text
+    # name_for_file = ask_file_name()  # Ask a name for file
+    # write_to_file(name_for_file, text_to_write)  # Create file and write date there
+    write_to_file(ask_file_name(), user_inputs())
 
 
 if __name__ == '__main__':
