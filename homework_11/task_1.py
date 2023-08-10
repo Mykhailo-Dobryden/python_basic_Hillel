@@ -1,3 +1,4 @@
+import decimal
 import uuid
 from decimal import Decimal
 from datetime import datetime
@@ -28,7 +29,8 @@ class Transaction:
         self.amount = Decimal(amount)
         self.date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.transact_type = transact_type
-        self.fee = round(self.amount * Decimal('0.01'), 2)
+        # self.fee = round(self.amount * Decimal('0.01'), 2)
+        self.fee = self.amount * Decimal('0.01')
 
     def __str__(self):
         return self.__repr__()
@@ -68,7 +70,7 @@ class BankAccount:
         """
         self.__id = uuid.uuid4()
         self.__name = name
-        self.__balance = Decimal('0')
+        self.__balance = Decimal('0').quantize(Decimal('1.00'))
         self.__transactions = []
 
     def __str__(self):
@@ -131,7 +133,7 @@ class BankAccount:
         Args:
             amount (str): The amount of money to deposit.
         """
-        if Decimal(amount) <= Decimal('0'):
+        if Decimal(amount) <= 0:
             raise ValueError("The sum can't be lesser than 0")
         transact = Transaction(amount, 'Deposits')
         self.__transactions.append(transact)
@@ -145,7 +147,7 @@ class BankAccount:
         Args:
             amount (str): The amount of money to withdraw.
         """
-        if Decimal(amount) <= Decimal('0'):
+        if Decimal(amount) <= 0:
             raise ValueError("The sum can't be lesser than 0")
         transact = Transaction(amount, 'Withdrawals')
         if Decimal(amount) + transact.fee > self.balance:
