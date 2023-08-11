@@ -1,63 +1,86 @@
-from dataclasses import dataclass
 import random
 from tabulate import tabulate
 import names
 
 
-
-@dataclass
 class Building:
-    build_number: int
-    residents: int
+    def __init__(self, number):
+        self.number = number
+        self.residents = random.randint(1, 101)
+
+    def __repr__(self):
+        return f"Number of house: {self.number} | Residents: {self.residents}"
 
 
-@dataclass
 class Street:
-    street_name: str
-    buildings = [Building(num, random.randint(1, 100)) for num in range(1, random.randint(5, 20))]
-    # buildings = [1, 2, 3, 4, 5]
+    def __init__(self, name):
+        self.name = name
+        self.buildings = [Building(i) for i in range(1, random.randint(5, 21))]
+
+    def __repr__(self):
+        return f"Street's name: {self.name}, Quantity of house: {self.buildings.__len__()} || "
 
 
-@dataclass
 class City:
-    name: str = "Odesa"
-    # streets: int = 10
-    # street_arr = [Street(f"{names.get_last_name()} street") for n in range(1, streets)]
-    street_arr = []
+    def __init__(self, name='Odesa'):
+        self.name = name
+        self.street_arr = []
 
-    # def add_street(self):
-    #     pass
+    def add_street(self, name: str):
+        self.street_arr.append(Street(name))
+
+    def del_street(self, name: str):
+        for street in self.street_arr:
+            if street.name == name:
+                index = self.street_arr.index(street)
+                self.street_arr.pop(index)
+                print(f"{name} street was deleted")
 
     def create_random_streets(self, number: int):
-        # streets = [Street(f"{names.get_last_name()} street") for n in range(1, number + 1)]
+        if number <= 0:
+            raise ValueError("An amount of streets must be positive integer")
         for num in range(1, number + 1):
-            self.street_arr.append(Street(f"{names.get_last_name()} street"))
+            self.street_arr.append(Street(f"{names.get_last_name()}"))
         return self.street_arr
 
     def get_residents(self):
-        residents = 0
-        for street in self.street_arr:
-            for building in street.buildings:
-                residents += building.residents
-        return residents
+        total_residents = sum(buildings.residents for street in self.street_arr for buildings in street.buildings)
+        return total_residents
 
     def get_city_table(self):
         header = ["Street", "Building Num", "Residents"]
         table = []
         for street in self.street_arr:
             for building in street.buildings:
-                table.append([street.street_name, building.build_number, building.residents])
+                table.append([street.name, building.number, building.residents])
 
         return tabulate(table, headers=header)
 
 
-c = City('Rozdilna')
-print(c)
-c.create_random_streets(10)
-print(c.street_arr)
-print(c.get_residents())
-print(c.get_city_table())
+# Client's code:
 
-# strit = Street('volvo')
-# print(strit)
-# print(strit.buildings)
+if __name__ == "__main__":
+    try:
+        c = City('Rozdilna')
+        print(c)
+        c.add_street("Korolyova")
+        c.add_street("Viliamsa")
+        c.add_street("Oficerska")
+        c.add_street("Glushko")
+        print(c.street_arr)
+        # print(c.get_residents())
+        c.create_random_streets(2)
+        print(c.get_city_table())
+        c.del_street('Glushko')
+        print(c.get_residents())
+
+        c2 = City()
+        print(c2.name)
+        print(c2.street_arr)
+        c2.create_random_streets(7)
+        c2.add_street("trolololo")
+        print(c2.get_city_table())
+
+    except ValueError as e:
+        print(e)
+
