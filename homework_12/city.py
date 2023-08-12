@@ -51,7 +51,15 @@ class City:
             return self.streets_arr.append(Street(street_name))
         return print(f"{street_name} street exist already")
 
+    # def del_street(self, street_name: str):
+    #     for street in self.streets_arr:
+    #         if street.name == street_name:
+    #             index = self.streets_arr.index(street)
+    #             self.streets_arr.pop(index)
+    #             print(f"{street_name} street was deleted")
     def del_street(self, street_name: str):
+        if self.is_street_exist(street_name) is False:
+            print(f"You can't delete {street_name} street, because it doesn't exist yet")
         for street in self.streets_arr:
             if street.name == street_name:
                 index = self.streets_arr.index(street)
@@ -111,6 +119,7 @@ if __name__ == "__main__":
     c.add_street("Oficerska")
     c.add_street("Glushko")
     c.add_street("Glushko")
+    print(c.streets_arr)
     print(c.streets_arr)
 
 
