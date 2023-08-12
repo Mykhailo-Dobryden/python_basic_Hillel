@@ -40,8 +40,8 @@ class City:
             if street.name == street_name:
                 for building in street.buildings:
                     if building.number == number:
-                        return True, street_name, number
-                return False, street_name, number
+                        return True
+                return False
 
     # def add_street(self, street_name: str):
     #     self.streets_arr.append(Street(street_name))
@@ -51,12 +51,6 @@ class City:
             return self.streets_arr.append(Street(street_name))
         return print(f"{street_name} street exist already")
 
-    # def del_street(self, street_name: str):
-    #     for street in self.streets_arr:
-    #         if street.name == street_name:
-    #             index = self.streets_arr.index(street)
-    #             self.streets_arr.pop(index)
-    #             print(f"{street_name} street was deleted")
     def del_street(self, street_name: str):
         if self.is_street_exist(street_name) is False:
             print(f"You can't delete {street_name} street, because it doesn't exist yet")
@@ -67,26 +61,24 @@ class City:
                 print(f"{street_name} street was deleted")
 
     def add_building(self, street_name, building_number):
-        for street in self.streets_arr:
-            if street.name == street_name:
-                for building in street.buildings:
-                    if building.number == building_number:
-                        return print(f"Building with number '{building_number}' is existing already")
-
-            if street.name == street_name:
-                street.buildings.append(Building(building_number))
-                print(f"Building {building_number} has been added on {street_name} street")
+        if not self.is_building_exist(street_name, building_number):
+            for street in self.streets_arr:
+                if street.name == street_name:
+                    street.buildings.append(Building(building_number))
+                    return print(f"Building {building_number} has been added on {street_name} street")
+        return print(f"Building with number '{building_number}' is existing already")
 
     def del_building(self, street_name, building_number):
-        for street in self.streets_arr:
-            if street.name == street_name:
-                for building in street.buildings:
-                    if building.number == building_number:
-                        index = street.buildings.index(building)
-                        street.buildings.pop(index)
-                        return print(f"Building {building_number} has been removed")
-                return print(f"It's impossible to delete not existing Building {building_number}")
-
+        if not self.is_building_exist(street_name, building_number):
+            return print(f"It's impossible to delete not existing building on {street_name}, {building_number}")
+        else:
+            for street in self.streets_arr:
+                if street.name == street_name:
+                    for building in street.buildings:
+                        if building.number == building_number:
+                            index = street.buildings.index(building)
+                            street.buildings.pop(index)
+                            return print(f"Building {building_number} has been removed")
 
     def create_random_streets(self, number: int):
         if number <= 0:
@@ -120,7 +112,13 @@ if __name__ == "__main__":
     c.add_street("Glushko")
     c.add_street("Glushko")
     print(c.streets_arr)
-    print(c.streets_arr)
-
+    c.add_building("Glushko", 100)
+    c.add_building("Glushko", 100)
+    c.del_building("Glushko", 100)
+    c.del_building("Glushko", 100)
+    print(c.print_city_table())
+    c.create_random_streets(3)
+    print(c.print_city_table())
+    print(c.get_residents())
 
 
