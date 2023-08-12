@@ -42,7 +42,13 @@ class City:
     def add_building(self, street_name, building_number):
         for street in self.streets_arr:
             if street.name == street_name:
+                for building in street.buildings:
+                    if building.number == building_number:
+                        return print(f"Building with number '{building_number}' exists")
+
+            if street.name == street_name:
                 street.buildings.append(Building(building_number))
+                print(f"House {building_number} has been added on {street_name} street")
 
     def del_building(self, street_name, building_number):
         for street in self.streets_arr:
@@ -51,6 +57,8 @@ class City:
                     if building.number == building_number:
                         index = street.buildings.index(building)
                         street.buildings.pop(index)
+                        return print(f"House {building_number} has been removed")
+                return print(f"There isn't house with {building_number}")
 
 
 
@@ -84,18 +92,17 @@ if __name__ == "__main__":
         c.add_street("Viliamsa")
         c.add_street("Oficerska")
         c.add_street("Glushko")
+        c.add_building("Glushko", 1)
+        c.add_building("Glushko", 20)
+        c.add_building("Glushko", 302)
         c.add_building("Glushko", 101)
-        c.add_building("Glushko", 102)
         c.add_building("Glushko", 103)
         c.del_building("Glushko", 1)
         c.del_building("Glushko", 101)
+        c.del_building("Glushko", 77)
+        c.add_building('Krakozabla', 777)
         print(c.streets_arr)
-        for street in c.streets_arr:
-            if street.name == "Glushko":
-                for b in street.buildings:
-                    print(b.number)
-
-        print(c.print_city_table())
+        # print(c.print_city_table())
 
 
     except ValueError as e:
