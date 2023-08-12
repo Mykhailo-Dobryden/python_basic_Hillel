@@ -96,18 +96,7 @@ if __name__ == "__main__":
                     print(b.number)
 
         print(c.print_city_table())
-        # print(c.get_residents())
-        # c.create_random_streets(2)
-        # print(c.print_city_table())
-        # c.del_street('Glushko')
-        # print(c.get_residents())
-        #
-        # c2 = City()
-        # print(c2.name)
-        # print(c2.streets_arr)
-        # c2.create_random_streets(7)
-        # c2.add_street("trolololo")
-        # print(c2.print_city_table())
+
 
     except ValueError as e:
         print(e)
