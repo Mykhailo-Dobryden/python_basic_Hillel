@@ -3,6 +3,7 @@ import csv
 class Product:
     PRODUCT_TYPE = ['coffee', 'tea']
 
+
     @classmethod
     def validate(cls, arg):
         if arg not in cls.PRODUCT_TYPE:
@@ -30,6 +31,9 @@ class Store:
         self.name = name
         self.products = []
 
+    def __str__(self):
+        return f"{self.name} shop"
+
     def import_inventory(self, path_to_file: str):
         with open(f"{path_to_file}", 'r') as csvfile:
             csvreader = csv.reader(csvfile)
@@ -45,7 +49,7 @@ class Store:
                 self.products.append((p, amount))
                 # print(f"{row} - has been loaded to the store")
 
-    def get_prod_tea(self):
+    def _get_prod_tea(self):
         prod_list = []
         for item in self.products:
             # print(item[0].prod_type)
@@ -53,12 +57,27 @@ class Store:
                 prod_list.append([item[0]])
         return prod_list
 
+    def _get_prod_coffee(self):
+        prod_list = []
+        for item in self.products:
+            # print(item[0].prod_type)
+            if item[0].prod_type == 'coffee':
+                prod_list.append([item[0]])
+        return prod_list
+
+    def _get_prod_all(self):
+        prod_list = []
+        for item in self.products:
+            prod_list.append([item[0]])
+        return prod_list
+
     def funcs(self, name):
         functions = {
-            'tea': self.get_prod_tea()
+            'tea': self._get_prod_tea(),
+            'coffee': self._get_prod_coffee(),
+            'all': self._get_prod_all(),
         }
         return functions[name]
-
 
     def get_products(self, name):
         for pr in self.funcs(name):
@@ -66,15 +85,17 @@ class Store:
 
 
 # client code
-prd = Product('Чай', 10, 'tea')
-prd2 = Product('Чай', 10, 'coffee')
-print(prd)
+# prd = Product('Чай', 10, 'tea')
+# prd2 = Product('Чай', 10, 'coffee')
+# print(prd)
 
 store = Store()
 store.import_inventory('inventory.csv')
-print(store.products)
+# print(store.products)
 # store.get_prod_tea()
-print(store.get_prod_tea())
-store.get_products('tea')
+print(store.products)
+# store.get_products('tea')
+# store.get_products('coffee')
+store.get_products('all')
 
 
