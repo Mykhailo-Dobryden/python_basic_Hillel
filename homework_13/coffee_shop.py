@@ -6,16 +6,22 @@ class Product:
     PRODUCT_TYPE = ['coffee', 'tea']
     LATTE = ['Молоко', 'Еспресо']
 
-    @classmethod
-    def validate(cls, arg):
-        if arg not in cls.PRODUCT_TYPE:
+    # @classmethod
+    # def validate(cls, arg):
+    #     if arg not in cls.PRODUCT_TYPE:
+    #         return False
+    #     return True
+
+    @staticmethod
+    def _validate(prod_type):
+        if prod_type not in Product.PRODUCT_TYPE:
             return False
         return True
 
     def __init__(self, name: str, price: int, prod_type: str):
         self.name = name
         self.price = price
-        if self.validate(prod_type):
+        if self._validate(prod_type):
             self.prod_type = prod_type
         else:
             self.prod_type = 'additional'
@@ -35,7 +41,7 @@ class Product:
             price = self.price + other.price
             prod_type = "coffee"
             return Product(name, price, prod_type)
-        return print(f"You can't creat a Latte from {self.name} and {other.name}")
+        raise ArithmeticError(f"You can't create a Latte from {self.name} and {other.name}")
 
 
 class Store:
@@ -79,9 +85,8 @@ class Store:
     def sell_product(self, name):
         for item in self.products:
             if item[0].name == name:
-                print(item[0].name)
                 self.products.pop(self.products.index(item))
-                # return print(f"{name}/{item[0].name} has been sold")
+                return print(f"{name} has been sold")
 
 
 # _______________________client code_____________________:
@@ -89,21 +94,24 @@ if __name__ == '__main__':
 
     store = Store()
     store.import_inventory('inventory.csv')
-
-    print(store.products)
+    # print(store.products)
     print(store.get_total_cost())
-
-    print(store.get_products('all'))
-    store.sell_product('Хліб')
+    # print(store.get_products('all'))
+    # store.sell_product('Хліб')
     store.sell_product('Зелений чай')
-    store.sell_product('Молоко')
+    # store.sell_product('Молоко')
     print(store.get_products())
     print(store.get_total_cost())
+
     milk = Product('Молоко', 10, 'additional')
     espresso = Product('Еспресо', 25, prod_type='coffee')
     latte = espresso + milk
     print(latte)
-    latte2 = milk + espresso
-    print(latte2)
+
+    # latte2 = milk + espresso
+    # print(latte2)
+    # corn = Product('Кукурудза', 2, 'additional')
+    # latte3 = milk + corn
+    # print(latte3)
 
 
