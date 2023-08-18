@@ -1,8 +1,9 @@
 import csv
+from tabulate import tabulate
+
 
 class Product:
     PRODUCT_TYPE = ['coffee', 'tea']
-
 
     @classmethod
     def validate(cls, arg):
@@ -54,24 +55,32 @@ class Store:
         for item in self.products:
             # print(item[0].prod_type)
             if item[0].prod_type == 'tea':
-                prod_list.append([item[0]])
+                prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
         return prod_list
 
     def _get_prod_coffee(self):
         prod_list = []
         for item in self.products:
-            # print(item[0].prod_type)
             if item[0].prod_type == 'coffee':
-                prod_list.append([item[0]])
+                prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
         return prod_list
 
     def _get_prod_all(self):
         prod_list = []
         for item in self.products:
-            prod_list.append([item[0]])
+            prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
         return prod_list
 
-    def funcs(self, name):
+    def get_products_2(self, name):
+        prod_list = []
+        for item in self.products:
+            if name == 'all':
+                prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
+            elif item[0].prod_type == name:
+                prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
+        return tabulate(prod_list)
+
+    def _funcs(self, name):
         functions = {
             'tea': self._get_prod_tea(),
             'coffee': self._get_prod_coffee(),
@@ -80,11 +89,20 @@ class Store:
         return functions[name]
 
     def get_products(self, name):
-        for pr in self.funcs(name):
-            print(" ".join(map(str, pr)), sep="\n")
+        prod_result = []
+        for pr in self._funcs(name):
+            prod_result.append(pr)
+            # print(" ".join(map(str, pr)), sep="\n")
+        return tabulate(prod_result)
+
+    def get_total_cost(self) -> str:
+        cost = 0
+        for item, amount in self.products:
+            cost += item.price * amount
+        return f"Total price of all goods is: {cost} UAH"
 
 
-# client code
+# _______________________client code_____________________:
 # prd = Product('Чай', 10, 'tea')
 # prd2 = Product('Чай', 10, 'coffee')
 # print(prd)
@@ -96,6 +114,8 @@ store.import_inventory('inventory.csv')
 print(store.products)
 # store.get_products('tea')
 # store.get_products('coffee')
-store.get_products('all')
+# print(type(store.get_products('all')))
+# print(store.get_products('all'))
+print(store.get_products_2('all'))
 
 
