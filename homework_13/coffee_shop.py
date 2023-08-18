@@ -4,6 +4,7 @@ from tabulate import tabulate
 
 class Product:
     PRODUCT_TYPE = ['coffee', 'tea']
+    LATTE = ['Молоко', 'Еспресо']
 
     @classmethod
     def validate(cls, arg):
@@ -24,7 +25,17 @@ class Product:
 
     def __repr__(self):
         return f"Type: {self.prod_type}; Name: {self.name}; Price: {self.price}"
-        # return [self.prod_type, self.name, self.price]
+
+    def __add__(self, other):
+        name = None
+        price = None
+        prod_type = None
+        if self.name and other.name in Product.LATTE:
+            name = 'Латте'
+            price = self.price + other.price
+            prod_type = "coffee"
+            return Product(name, price, prod_type)
+        return print(f"You can't creat a Latte from {self.name} and {other.name}")
 
 
 class Store:
@@ -48,52 +59,16 @@ class Store:
                     amount = int(row[3])
                 p = Product(name, price, pr_type)
                 self.products.append((p, amount))
-                # print(f"{row} - has been loaded to the store")
 
-    def _get_prod_tea(self):
+    def get_products(self, name: str = 'all') -> str:
         prod_list = []
-        for item in self.products:
-            # print(item[0].prod_type)
-            if item[0].prod_type == 'tea':
-                prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
-        return prod_list
-
-    def _get_prod_coffee(self):
-        prod_list = []
-        for item in self.products:
-            if item[0].prod_type == 'coffee':
-                prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
-        return prod_list
-
-    def _get_prod_all(self):
-        prod_list = []
-        for item in self.products:
-            prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
-        return prod_list
-
-    def get_products_2(self, name):
-        prod_list = []
+        headers = ["Назва", "Тип", "Ціна", "Кількість"]
         for item in self.products:
             if name == 'all':
                 prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
             elif item[0].prod_type == name:
                 prod_list.append([item[0].name, item[0].prod_type, item[0].price, item[1]])
-        return tabulate(prod_list)
-
-    def _funcs(self, name):
-        functions = {
-            'tea': self._get_prod_tea(),
-            'coffee': self._get_prod_coffee(),
-            'all': self._get_prod_all(),
-        }
-        return functions[name]
-
-    def get_products(self, name):
-        prod_result = []
-        for pr in self._funcs(name):
-            prod_result.append(pr)
-            # print(" ".join(map(str, pr)), sep="\n")
-        return tabulate(prod_result)
+        return tabulate(prod_list, headers=headers)
 
     def get_total_cost(self) -> str:
         cost = 0
@@ -101,21 +76,34 @@ class Store:
             cost += item.price * amount
         return f"Total price of all goods is: {cost} UAH"
 
+    def sell_product(self, name):
+        for item in self.products:
+            if item[0].name == name:
+                print(item[0].name)
+                self.products.pop(self.products.index(item))
+                # return print(f"{name}/{item[0].name} has been sold")
+
 
 # _______________________client code_____________________:
-# prd = Product('Чай', 10, 'tea')
-# prd2 = Product('Чай', 10, 'coffee')
-# print(prd)
+if __name__ == '__main__':
 
-store = Store()
-store.import_inventory('inventory.csv')
-# print(store.products)
-# store.get_prod_tea()
-print(store.products)
-# store.get_products('tea')
-# store.get_products('coffee')
-# print(type(store.get_products('all')))
-# print(store.get_products('all'))
-print(store.get_products_2('all'))
+    store = Store()
+    store.import_inventory('inventory.csv')
+
+    print(store.products)
+    print(store.get_total_cost())
+
+    print(store.get_products('all'))
+    store.sell_product('Хліб')
+    store.sell_product('Зелений чай')
+    store.sell_product('Молоко')
+    print(store.get_products())
+    print(store.get_total_cost())
+    milk = Product('Молоко', 10, 'additional')
+    espresso = Product('Еспресо', 25, prod_type='coffee')
+    latte = espresso + milk
+    print(latte)
+    latte2 = milk + espresso
+    print(latte2)
 
 
