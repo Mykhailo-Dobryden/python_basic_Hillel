@@ -101,16 +101,14 @@ def main() -> str:
         str: The identified region corresponding to the provided vehicle registration number.
     """
     user_input = input_reg_number()
-    # print(user_input)
     match = re.search(PATTERN, user_input)
-    # print(match)
     if match is None:
         raise ValueError(f"{user_input} - is incorrect number")
     code = match.groupdict()
-    # print(code)
     return indetify_region(code['prefix'])
 
 
 # -----------client code:------------------
+if __name__ == '__main__':
 
-print(main())
+    print(main())
