@@ -105,7 +105,7 @@ def validate_iata_code(code: str):
    Raises:
        IATACodeError: If the provided code is not a valid IATA code.
    """
-    if len(code) != 3 or code != code.upper():
+    if len(code) != 3 or code != code.upper() or not code.isalpha():
         raise IATACodeError("Incorect IATA code", code)
     return True
 
@@ -204,7 +204,6 @@ def handle_args(arguments: object):
         raise NoOptionsFoundError("One option needs to be chosen, use -h for help")
     if counter > 1:
         raise MultipleOptionsError("Choose only one option")
-
 
 
 # The dictionary with search functions
